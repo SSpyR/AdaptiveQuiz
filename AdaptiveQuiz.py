@@ -1,4 +1,3 @@
-import os
 import csv
 import random
 
@@ -17,6 +16,9 @@ import random
 
 
 ## Start just the general app here
+## Need to catch the error of users not typing a number for the answer
+## Don't hardcode rows in, automate it somehow for multiple formats
+## jQuery and Flask integration is main focus now
 
 class Question:
     def __init__(self, ques, ans):
