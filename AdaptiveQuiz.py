@@ -17,8 +17,9 @@ import random
 
 ## Start just the general app here
 ## Need to catch the error of users not typing a number for the answer
-## Don't hardcode rows in, automate it somehow for multiple formats
 ## jQuery and Flask integration is main focus now
+## Setup Variants
+## Start scoring to track difficulty level to start at for each user (also have to log who is using it)
 
 class Question:
     def __init__(self, ques, ans):
@@ -28,16 +29,26 @@ class Question:
 # Pull Questions from CSV
 prompts=[]
 
-# Assign Correct Answer from CSV (row[14])
+# Assign Correct Answer from CSV
 answers=[]
+
+# Pull Options for Wrong Answers from CSV
+options=[]
 
 with open('Questions.csv', newline='') as csvfile:
     lreader=csv.reader(csvfile, delimiter=',', quotechar='|')
+    ansidx=None
     for row in lreader:
         try:
             print(row)
             prompts.append(row[0])
-            answers.append(row[14])
+
+            for cell in row:
+                if cell.__contains__('Answer'):
+                    ansidx=row.index(cell)
+                if cell.__contains__('Option'):
+                    options.append(row.index(cell))
+            answers.append(row[ansidx])
         except IndexError:
             print('List Complete')
 
@@ -50,16 +61,16 @@ while x < len(prompts):
     x+=1
 
 # Every time you rotate to a new question, grab the random answers to use and display
-# Options are rows 2,4,6,8,10,12
-# Answer is row 14
 def run(questions):
-    options=[2,4,6,8,10,12]
+    #options=[2,4,6,8,10,12]
     with open('Questions.csv', newline='') as csvfile:
         lreader=csv.reader(csvfile, delimiter=',', quotechar='|')
         for question, row in zip(questions, lreader):
             try:
                 if "Question" in row[0]:
                     continue
+                if row[0].__contains__('{'):
+                    #finish variant stuff here
                 aux=options.copy()
                 choices=[]
                 for i in range(3): #randomizing what 3 of the 6 wrong answers to use
