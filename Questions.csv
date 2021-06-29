@@ -1,6 +1,6 @@
 Question, ,Option1, ,Option2, ,Option3, ,Option4, ,Option5, ,Option6, ,Correct Answer, , ,,,
 Which command is used to copy files and directory in Linux?, ,mv, ,dp, ,cd, ,ls, ,Pwd, ,cls, ,cp, , ,,,
-"Which of these method call would find the {highest/lowest} value of x and y?", ,"Math.maxNum(x,y)", ,"Math.minNum(x,y)", ,"Math.largest(x,y)", ,"Math.smallest(x,y)", ,"Math.maximum(x,y)", ,"Math.minimum(x,y)",," {Math.max(x,y)/Math.min(x,y)}", , ,,,
+Which of these method call would find the {highest/lowest} value of x and y?, ,Math.maxNum(x;y), ,Math.minNum(x;y), ,Math.largest(x;y), ,Math.smallest(x;y), ,Math.maximum(x;y), ,Math.minimum(x;y),,{Math.max(x;y)/Math.min(x;y)}, , ,,,
 What option explains best use of the top command?, ,display only application memory, ,List all the proccess running in background, ,display processor activity that were terminated by kernel, ,Bring any activity to top of kernel process, ,Determines the path of any running task, ,To clear the screen, ,display processor activity and task managed by kernel in real-time, , , , ,  
 which option is not used to access the LINUX system?, ,Telnet, ,SSH, ,Client SW, ,Nmap, ,dumb terminal, ,Wireshark, ,Facebook Messenger, , , , ,
 Which comand is used for troubleshooting and Configuration?, ,telnet, ,Ipconfig, ,apt-update, ,IPaddr, ,Mv, ,Top, ,netstat, , , , ,  
