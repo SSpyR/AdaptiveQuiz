@@ -66,7 +66,6 @@ with open('Questions.csv', newline='') as csvfile:
                     answerChoiceSplit=answerChoiceString.split('/')
                     answerChoiceFinal=answerChoiceSplit[randidx]
                     row[ansidx]=row[ansidx].replace(answerChoiceString, answerChoiceFinal)
-                    print(row[ansidx])
                     row[ansidx]=row[ansidx].replace('{','')
                     row[ansidx]=row[ansidx].replace('}','')
             answers.append(row[ansidx])
