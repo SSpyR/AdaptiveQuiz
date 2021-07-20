@@ -1,6 +1,7 @@
 import csv
 import random
 import re
+from itertools import islice
 
 ## Read into this later
 #from flask import Flask
@@ -20,6 +21,7 @@ import re
 ## Need to catch the error of users not typing a number for the answer
 ## jQuery and Flask integration is main focus now
 ## Start scoring to track difficulty level to start at for each user (also have to log who is using it)
+## Questions.csv is Original CSV, Questions_1.csv is Difficulty Tracking CSV
 
 class Question:
     def __init__(self, ques, ans):
@@ -35,7 +37,15 @@ answers=[]
 # Pull Options for Wrong Answers from CSV
 options=[]
 
-with open('Questions.csv', newline='') as csvfile:
+# Pull Score of User
+player_score=0
+
+## Pull Score from File Here
+
+# Tracking Current Session Score
+current_score=player_score
+
+with open('Questions_1.csv', newline='') as csvfile:
     lreader=csv.reader(csvfile, delimiter=',', quotechar='|')
     ansidx=None
     randidx=None
@@ -72,6 +82,21 @@ with open('Questions.csv', newline='') as csvfile:
         except IndexError:
             print('List Complete')
 
+# Start at Right Place Based on Score
+medium_threshold=9
+high_threshold=14
+score_threshold='easy'
+
+# Removing Prompts and Answers for Start Based on Score
+if player_score>=medium_threshold and player_score<high_threshold:
+    score_threshold='medium'
+    prompts=prompts[16:]
+    answers=answers[16:]
+if player_score>=high_threshold:
+    score_threshold='high'
+    prompts=prompts[23:]
+    answers=answers[23:]
+
 # Connecting Correct Answer to Prompt
 questions=[]
 x=0
@@ -80,13 +105,24 @@ while x < len(prompts):
     questions.append(Question(prompts[x], answers[x]))
     x+=1
 
+
 # Every time you rotate to a new question, grab the random answers to use and display
-def run(questions):
-    with open('Questions.csv', newline='') as csvfile:
-        lreader=csv.reader(csvfile, delimiter=',', quotechar='|')
+def run(questions, current_score):
+    with open('Questions_1.csv', newline='') as csvfile:
+        x=0
+        if score_threshold=='medium':
+            x=16
+        if score_threshold=='high':
+            x=23
+        #df=pd.read_csv('Questions_1.csv', skiprows=x, delimiter=',', quotechar='|')
+        lreader=csv.reader(islice(csvfile, x, None), delimiter=',', quotechar='|')
         for question, row in zip(questions, lreader):
             try:
                 if "Question" in row[0]:
+                    continue
+                if "Assigned Difficulty" in row[0]:
+                    continue
+                if len(row[0])==0:
                     continue
                 aux=options.copy()
                 choices=[]
@@ -110,11 +146,13 @@ def run(questions):
                 actans=selection[(int(answer)-1)] #checking against selection array
                 if question.ans in actans:
                     print('Correct!')
+                    current_score+=1
                 else:
                     print('Incorrect!')
             except IndexError:
                 print('List Complete')
+        ## Save Score to File Here
 
 
-run(questions)
+run(questions, current_score)
 

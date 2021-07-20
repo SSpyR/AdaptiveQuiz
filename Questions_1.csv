@@ -14,7 +14,7 @@ What commands may a user on a Linux system run to quickly gather basic informati
 ,,,,,,,,,,,,,,,,,,,
 Assigned Difficulty: Medium,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,
-Which of these method call would find the highest value of x and y?, ,Math.maxNum(x;y),, Math.minNum(x;y), ,Math.largest(x;y), ,Math.smallest(x;y), ,Math.maximum(x;y), ,Math.minimum(x;y),,{Math.max(x;y)/Math.min(x;y)}, , , ,,
+Which of these method call would find the {highest/lowest} value of x and y?, ,Math.maxNum(x;y),,Math.minNum(x;y), ,Math.largest(x;y), ,Math.smallest(x;y), ,Math.maximum(x;y), ,Math.minimum(x;y),,{Math.max(x;y)/Math.min(x;y)}, , , ,,
 Command used to reset the date and time, ,date [-option], ,date -U, ,date -m, ,cal [-option], ,date -R, ,date, ,date -s, , , , , 
 What command is used in order to make file executable?, ,Chmod 555, ,print, ,Chmod+y, ,Chmod +Z, ,-R-, ,"""=-X""", ,Chmod + X, , , , ,
 Which protocol is best used for live streaming video?, ,TCP, ,ARP, ,IP, ,Ethernet, ,HTTPS, ,ICMP, ,UDP, , , , , 
