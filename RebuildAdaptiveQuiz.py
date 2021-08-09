@@ -1,18 +1,20 @@
-import csv
-import random
-import re
-import os
-from itertools import islice
-import threading, time
-import json
+# RebuildAdaptiveQuiz.py
+# See AdaptiveQuiz.py for Original CLI code, re-written by Devin Salter for proper Web App Integration with Flask
+# Creators: Devin Salter
 
-# Read into this later
+# Make UI bigger, add Header
+
+import csv, random, re, os
+from itertools import islice
+import threading, time, json, sys
 
 from flask import Flask, flash, render_template, request, session, redirect
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+closed = False # Flag for save_thread
+save_thread = None # Contains the thread saving user information on interval
 questions = [] # Holds Question objects
 options = [] # Determines all the columns that contain options for answers
 difficulty_markers = [] # Marks where the first question in a given difficulty is
@@ -34,11 +36,12 @@ class User:
     def reduce_score(self):
         if self.score > 0:
             self.score -= 1
-            print(self.score)
+        print('New Score: ' + str(self.score) + '\n')
+        
 
     def add_score(self):
         self.score += 1
-        print(self.score)
+        print('New Score: ' + str(self.score) + '\n')
 
 class CurrentQuestion:
 
@@ -50,6 +53,34 @@ class CurrentQuestion:
 
     def __str__(self):
         return f'{self.user.cookie}, {self.question.question}'
+
+def save_users():
+    print('\nSaving Data...')
+    with open('users.txt', 'w') as file:
+        for user in users:
+            file.write(f'{user.cookie};{user.score}\n')
+    print('Finished Saving Data\n')
+
+def save_users_on_timer():
+    # Timer portion from https://stackoverflow.com/questions/474528/what-is-the-best-way-to-repeatedly-execute-a-function-every-x-seconds
+    # by Dave Rove, used because it was more efficient than what we originally created
+    start = time.time()
+    while not closed:
+        # Initiates a save every 2 minutes
+        time.sleep(120 - (time.time() - start) % 120)
+        start = time.time()
+        save_users()
+
+def load_users():
+    print('Loading Users...\n')
+    with open('users.txt', 'r') as file:
+        lines = file.readlines()
+        for line in lines: 
+            print(str(line))
+            info = line.split(';')
+            users.append(User(info[0], int(info[1])))
+            line = file.readline()
+    print('Finished Loading Users.\n')
 
 # Checks the given cell/string for a variant question, choosing randomly
                 # Only occurs if there is an option built into the question
@@ -123,7 +154,7 @@ def read_file():
                                           answer_options))
 
             except IndexError:
-                print('List Complete')
+                print('List Complete\n')
 
 # Chooses a random question in the provided range
 def get_question(min, max):
@@ -187,7 +218,6 @@ def find_user(cookie):
 # Finds thread associated with user
 def find_current_question(user):
     for current_question in current_questions:
-        print(f'{current_question.user}, {user}')
         if current_question.user != user:
             continue
         return current_question
@@ -195,7 +225,6 @@ def find_current_question(user):
 
 # Removes thread
 def remove_current_question(user_question):
-    print('removing' + str(user_question))
     current_questions.remove(user_question)
     user_question.user.timer_thread = None
 
@@ -204,21 +233,17 @@ def await_answer(user_question):
     start_time = time.time()
     while True:
         if user_question.kill_thread:
-            print(str(current_questions))
             remove_current_question(user_question)
-            print('thread killed early')
             break
 
         if time.time() - start_time > 45:
-            print(str(current_questions))
-            print('time exceeded')
             user = user_question.user
             user.reduce_score()
             remove_current_question(user_question)
             break
-    print(str(current_questions))
-    print('loop broken')
 
+        if closed:
+            break
 
 # Methods to be called by client
 
@@ -230,8 +255,6 @@ def home():
 # Send the next question to the proper user
 @app.route('/send', methods=['POST'])
 def send():
-    print("\n")
-    print(str(current_questions))
     # Find correct user in list or create user
     user = find_user(request.cookies.get('username'))
 
@@ -257,30 +280,42 @@ def send():
 # Receive the answer provided by user
 @app.route('/receive', methods=["POST"])
 def receive():
-    print("\n")
-    print(str(request.form.get('answer-choice')))
-
     # Find correct user in list
     user = find_user(request.cookies.get('username'))
 
     # Find active question for user
     user_question = find_current_question(user)
+
+    print(f'\n{user_question}\n{str(request.form.get("answer-choice"))}')
+
     if user_question is None:
-        print('error, user_question is none')
+        print('error, user_question is none\n')
         return ''
     
-    # Kill current thread and join to main
+    # Kill user's thread and join to receive
     user_question.kill_thread = True
     user.timer_thread.join()
 
     # Determine if score needs to increase or decrease
     if check_correct(user_question.question, request.form.get('answer-choice')):
         user.add_score()
-    else:
+    elif not closed:
         user.reduce_score()
-    print('reached end of receive')
     return ''
 
 if __name__ == '__main__':
+    load_users()
     read_file()
-    app.run(debug = False, port = 5000)
+    save_thread = threading.Thread(target=save_users_on_timer)
+    save_thread.start()
+    # app.run(debug = False, host = '10.0.0.69', port = 5000)
+    app.run(debug=False, port=5000)
+    # Will only reach this point on the app being closed or interrupted
+    print('\nProgram will end after next scheduled save.')
+    print('NOTE: No new user activity will be recorded at this time.')
+    closed = True
+    for question in current_questions:
+        question.user.timer_thread.join()
+    save_thread.join()
+    print('Program ended by KeyboardInterrupt.\n')
+    sys.exit(0)

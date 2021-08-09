@@ -1,26 +1,13 @@
+# AdaptiveQuiz.py
+# Original CLI File, see RebuildAdaptiveQuiz.py for Proper WebApp Integration
+# Creators: Angel LaVoie, Suman Panta, Sankalpa Kattel
+
 import csv
 import random
 import re
+
 from itertools import islice
 
-## Read into this later
-#from flask import Flask
-
-#app=Flask(__name__)
-
-#@app.route('/')
-#def test():
-#    return 'Test'
-
-
-#if __name__=='__main__':
-#    app.run()
-
-
-## Start just the general app here
-## Need to catch the error of users not typing a number for the answer
-## jQuery and Flask integration is main focus now
-## Start scoring to track difficulty level to start at for each user (also have to log who is using it)
 ## Questions.csv is Original CSV, Questions_1.csv is Difficulty Tracking CSV
 
 class Question:

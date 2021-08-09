@@ -1,6 +1,6 @@
 const submit = $("<input id='finish' type = 'submit' value = 'Submit and Finish' /> ")
 const next = $("<input id='next' type='submit' value='Continue'/>")
-var timer
+var timer = null
 
 $(document).ready(function () {
     checkCookie()
@@ -9,6 +9,12 @@ $(document).ready(function () {
         $("#top").fadeOut(500)
         getQuestion(500)
     })
+})
+
+$(window).on('unload', function () {
+    if (timer != null) {
+        sendAnswer()
+    }
 })
 
 // Gets the next question for the user
@@ -37,6 +43,10 @@ function getQuestion(timeout) {
 // Fills appropriate areas in question field with data from backend
 function occupyQuestionField(question) {
     $("#prompt").append(question.prompt)
+
+    // You might be able to use this later if you add questions with more or less than 4 answers
+    // instead of the four lines below that aren't in comments. Would need to change something with 
+    // getting specific question values
 
     /*var checked = false;
     for (var i = 1; i < Object.keys(question).length; i++) {
@@ -80,7 +90,8 @@ function clearQuestion() {
 }
 
 function nextQuestion() {
-    clearInterval(timerd)
+    clearInterval(timer)
+    timer = null
     sendAnswer()
     clearQuestion()
     getQuestion(500)
@@ -99,6 +110,7 @@ function sendAnswer() {
 
 function finish() {
     clearInterval(timer)
+    timer = null
     sendAnswer()
     reset()
 }
