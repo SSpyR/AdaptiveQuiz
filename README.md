@@ -1,10 +1,10 @@
 # AdaptiveQuiz
  Senior Project. Adaptive Quiz Web App
 
- # What Is It?
+# What Is It?
  A Web Based Quiz Application Basis that uses Randomization, Variation, and Score Tracking to create a unique Quiz Learning Experience
 
- # How to Run It (Local)
+# How to Run It (Local)
  Currently the code is configured to run only locally but has the option to be setup to run as a proper Web Page.
 
  To run the local code, navigate to where the source folder was downloaded inside your Command Prompt/Terminal Window and make sure you have Python installed on your machine.
@@ -16,7 +16,7 @@
 
  Once you do this the Web Page can be visited at http://127.0.0.1:5000/ or whatever port is edited in within the RebuildAdaptiveQuiz.py file
 
- # How to Run It (Hosted Web Page)
+# How to Run It (Hosted Web Page)
  The way to run this project as a Hosted Web Page is the same as above except the link will be different and a couple things need to be done
 
  Within the RebuildAdaptiveQuiz.py you will find 2 lines of code
@@ -37,7 +37,7 @@
  http://10.0.0.69:5000/
  ```
 
- # Contact
+# Contact
  Feel free to contact us with any questions
  lavoiet2@wit.edu
  pantas@wit.edu
